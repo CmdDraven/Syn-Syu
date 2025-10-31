@@ -137,6 +137,6 @@ manifest_summary() {
     "Buffer (bytes): \(.metadata.min_free_bytes // 0)",
     "Required (bytes): \(.metadata.required_space_total // 0)",
     "Available (bytes): \(.metadata.available_space_bytes // 0)",
-    "Checked path: \(.metadata.space_checked_path // \"\")"
+    ("Checked path: " + (.metadata.space_checked_path // ""))
   ' "$SYN_MANIFEST_PATH"
 }
