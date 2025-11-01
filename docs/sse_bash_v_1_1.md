@@ -1,23 +1,23 @@
 <!--
-Synvera Script Etiquette — Bash Profile v1.1.1
+Synavera Script Etiquette — Bash Profile v1.1.1
 Derived from SSE v1.1
 Author: CMD Draven
-Scope: Shell / POSIX-compliant Bash scripting under Synvera standards.
+Scope: Shell / POSIX-compliant Bash scripting under Synavera standards.
 -->
 
-# Synvera Script Etiquette — Bash Profile v1.1.1
+# Synavera Script Etiquette — Bash Profile v1.1.1
 
 ## 1. Verbosity vs Brevity  
 **Chosen Approach:** Verbose + Defensive  
 
-Bash is an interpretive shell, not a compiler. Ambiguity kills reliability. Every Bash script under Synvera’s umbrella must prefer *explicitness* over clever shorthand. Always quote variables (`"$VAR"`), always define functions clearly, and always check command outcomes. Obfuscating behavior for the sake of brevity is forbidden. One-liners are acceptable only when their purpose is self-evident. Use descriptive variable names (`LOG_PATH`, not `lp`), and declare constants in uppercase to visually distinguish them. Scripts must be written as if they will be run by an auditor, not a hobbyist.
+Bash is an interpretive shell, not a compiler. Ambiguity kills reliability. Every Bash script under Synavera’s umbrella must prefer *explicitness* over clever shorthand. Always quote variables (`"$VAR"`), always define functions clearly, and always check command outcomes. Obfuscating behavior for the sake of brevity is forbidden. One-liners are acceptable only when their purpose is self-evident. Use descriptive variable names (`LOG_PATH`, not `lp`), and declare constants in uppercase to visually distinguish them. Scripts must be written as if they will be run by an auditor, not a hobbyist.
 
 ---
 
 ## 2. Error Handling and Fault Philosophy  
 **Chosen Approach:** Predictable + Exit-Bound  
 
-Silent failure is a sin in Bash. Every command whose failure could impact behavior must be validated immediately using either `set -euo pipefail` or explicit conditionals. Use `trap` for cleanup and error signals (`EXIT`, `ERR`, `INT`) to ensure the system leaves no undefined state. When a command fails, log both the command and its exit code in a timestamped record. Synvera Bash scripts must produce deterministic exits: either zero (success) or a well-defined nonzero code, never half-failed silent states.  
+Silent failure is a sin in Bash. Every command whose failure could impact behavior must be validated immediately using either `set -euo pipefail` or explicit conditionals. Use `trap` for cleanup and error signals (`EXIT`, `ERR`, `INT`) to ensure the system leaves no undefined state. When a command fails, log both the command and its exit code in a timestamped record. Synavera Bash scripts must produce deterministic exits: either zero (success) or a well-defined nonzero code, never half-failed silent states.  
 Each error should be human-legible and machine-parsable, e.g.:
 
 ```bash
@@ -65,7 +65,7 @@ Files must end with a newline.
 **Chosen Approach:** User Sovereignty + No Hidden State  
 
 A Bash script is the system’s front line — treat it as sacred ground.  
-No Synvera Bash script shall ever:  
+No Synavera Bash script shall ever:  
 - Write outside user-owned directories without explicit confirmation.  
 - Send or receive network traffic without clearly announcing its intent.  
 - Mask or redirect stderr in ways that conceal behavior.  
@@ -103,9 +103,9 @@ No deletion or truncation of logs is permitted; rotate only by archiving.
 
 ```
 #============================================================
-# Synvera Project: [PROJECT / MODULE NAME]
+# Synavera Project: [PROJECT / MODULE NAME]
 # Module: [relative/path/to/script.sh]
-# Etiquette: Synvera Script Etiquette — Bash Profile v1.1.1
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
 #------------------------------------------------------------
 # Purpose:
 #   [Briefly describe what this script does.]
@@ -144,6 +144,6 @@ Where deviations are required for clarity, document them inline with justificati
 
 ## 10. Conformance  
 
-Any Bash script not conforming to this etiquette cannot be labeled as “Synvera-compliant.”  
+Any Bash script not conforming to this etiquette cannot be labeled as “Synavera-compliant.”  
 SSE-Bash inherits all universal tenets from SSE v1.1.  
 If ambiguity arises between this profile and the universal etiquette, the universal etiquette supersedes.

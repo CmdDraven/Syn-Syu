@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #============================================================
-# Synvera Project: Syn-Syu
+# Synavera Project: Syn-Syu
 # Module: tools/uninstall_syn-syu.sh
-# Etiquette: Synvera Script Etiquette — Bash Profile v1.1.1
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
 #------------------------------------------------------------
 # Purpose:
 #   Interactive uninstaller to remove Syn-Syu and Syn-Syu-Core

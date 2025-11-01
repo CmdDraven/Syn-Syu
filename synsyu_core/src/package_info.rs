@@ -1,7 +1,7 @@
 /*============================================================
-  Synvera Project: Syn-Syu
+  Synavera Project: Syn-Syu
   Module: synsyu_core::package_info
-  Etiquette: Synvera Script Etiquette — Rust Profile v1.1.1
+  Etiquette: Synavera Script Etiquette — Rust Profile v1.1.1
   ------------------------------------------------------------
   Purpose:
     Shared structures describing version metadata retrieved

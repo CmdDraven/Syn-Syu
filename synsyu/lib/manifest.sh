@@ -1,7 +1,7 @@
 #============================================================
-# Synvera Project: Syn-Syu
+# Synavera Project: Syn-Syu
 # Module: synsyu/lib/manifest.sh
-# Etiquette: Synvera Script Etiquette — Bash Profile v1.1.1
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
 #------------------------------------------------------------
 # Purpose:
 #   Manage Syn-Syu manifest lifecycle and provide JSON parsing

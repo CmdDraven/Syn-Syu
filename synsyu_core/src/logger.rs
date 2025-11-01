@@ -1,7 +1,7 @@
 /*============================================================
-  Synvera Project: Syn-Syu
+  Synavera Project: Syn-Syu
   Module: synsyu_core::logger
-  Etiquette: Synvera Script Etiquette — Rust Profile v1.1.1
+  Etiquette: Synavera Script Etiquette — Rust Profile v1.1.1
   ------------------------------------------------------------
   Purpose:
     Provide structured, append-only logging utilities for
@@ -57,7 +57,7 @@ impl LogLevel {
     }
 }
 
-/// Shared logger that emits append-only entries in Synvera format.
+/// Shared logger that emits append-only entries in Synavera format.
 pub struct Logger {
     file: Option<Mutex<BufWriter<File>>>,
     path: Option<PathBuf>,

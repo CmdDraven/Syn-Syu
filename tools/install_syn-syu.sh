@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #============================================================
-# Synvera Project: Syn-Syu
+# Synavera Project: Syn-Syu
 # Module: tools/install_syn-syu.sh
-# Etiquette: Synvera Script Etiquette — Bash Profile v1.1.1
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
 #------------------------------------------------------------
 # Purpose:
 #   Interactive installer wizard that builds and deploys

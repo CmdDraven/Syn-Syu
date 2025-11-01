@@ -1,7 +1,7 @@
 pkgname=syn-syu
 pkgver=0.1
 pkgrel=1
-pkgdesc="Syn-Syu — Synvera's conscious successor to pacman -Syu"
+pkgdesc="Syn-Syu — Synavera's conscious successor to pacman -Syu"
 arch=('x86_64')
 url="https://github.com/CmdDraven/Syn-Syu"
 license=('Apache')

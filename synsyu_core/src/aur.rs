@@ -1,7 +1,7 @@
 /*============================================================
-  Synvera Project: Syn-Syu
+  Synavera Project: Syn-Syu
   Module: synsyu_core::aur
-  Etiquette: Synvera Script Etiquette — Rust Profile v1.1.1
+  Etiquette: Synavera Script Etiquette — Rust Profile v1.1.1
   ------------------------------------------------------------
   Purpose:
     Query the Arch User Repository RPC API to gather version

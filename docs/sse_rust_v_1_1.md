@@ -1,11 +1,11 @@
 <!--
-Synvera Script Etiquette — Rust Profile v1.1.1
+Synavera Script Etiquette — Rust Profile v1.1.1
 Derived from SSE v1.1
 Author: CMD Draven
-Scope: Systems and application development in Rust under Synvera standards.
+Scope: Systems and application development in Rust under Synavera standards.
 -->
 
-# Synvera Script Etiquette — Rust Profile v1.1.1
+# Synavera Script Etiquette — Rust Profile v1.1.1
 
 ## 1. Verbosity vs Brevity
 **Chosen Approach:** Explicit + Intent‑Driven
@@ -32,7 +32,7 @@ Every public item carries a doc comment describing purpose, contracts, side effe
 
 
 ## 5. Aesthetic and Formatting Conventions
-**Chosen Approach:** Tool‑enforced consistency + Synvera discipline
+**Chosen Approach:** Tool‑enforced consistency + Synavera discipline
 
 Formatting is enforced by `rustfmt` (stable channel). Linting via `clippy` runs with a strict configuration; deviations are explicitly allowed with justification at the smallest scope. Line width targets 100 characters. Imports are grouped by crate, then alphabetized. Modules are small and cohesive; whitespace separates ideas, not merely syntax. Files are UTF‑8 and end with a newline.
 
@@ -40,7 +40,7 @@ Formatting is enforced by `rustfmt` (stable channel). Linting via `clippy` runs 
 ## 6. Ethical Layer
 **Chosen Approach:** User Agency + Explicit Consent
 
-Software belongs to its operator. No Synvera Rust binary or library shall emit telemetry, alter external state, or escalate privileges without clear disclosure and operator control. Destructive actions require explicit confirmation or safe non‑interactive flags. Persistent state changes are reversible where feasible, or documented as irreversible with rationale. Secrets are never logged; redaction is mandatory.
+Software belongs to its operator. No Synavera Rust binary or library shall emit telemetry, alter external state, or escalate privileges without clear disclosure and operator control. Destructive actions require explicit confirmation or safe non‑interactive flags. Persistent state changes are reversible where feasible, or documented as irreversible with rationale. Secrets are never logged; redaction is mandatory.
 
 
 ## 7. Auditability and Temporal Trace
@@ -103,9 +103,9 @@ Builds are reproducible on stable toolchains and documented. Release artifacts i
 
 ```
 /*============================================================
-  Synvera Project: [PROJECT / CRATE NAME]
+  Synavera Project: [PROJECT / CRATE NAME]
   Module: [crate::path::to::module]
-  Etiquette: Synvera Script Etiquette — Rust Profile v1.1.1
+  Etiquette: Synavera Script Etiquette — Rust Profile v1.1.1
   ------------------------------------------------------------
   Purpose:
     [Describe the module’s mission succinctly.]
@@ -142,4 +142,4 @@ Formatting with `rustfmt`; linting with `clippy` at a strict level. Documentatio
 ## 18. Conformance
 **Chosen Approach:** Universal precedence
 
-SSE‑Rust inherits the universal SSE v1.1. Where conflicts arise, the universal etiquette supersedes. A crate or module may not be labeled “Synvera‑compliant” unless it meets this profile’s mandates appropriate to its execution stratum.
+SSE‑Rust inherits the universal SSE v1.1. Where conflicts arise, the universal etiquette supersedes. A crate or module may not be labeled “Synavera‑compliant” unless it meets this profile’s mandates appropriate to its execution stratum.
