@@ -34,6 +34,10 @@ package() {
   # Core README was removed when vendoring; top-level README covers both layers.
   install -Dm644 examples/config.toml     "$pkgdir/usr/share/syn-syu/examples/config.toml"
 
+  # License and NOTICE (ship alongside common license reference)
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/${pkgname}/LICENSE"
+  install -Dm644 NOTICE  "$pkgdir/usr/share/licenses/${pkgname}/NOTICE"
+
   # Provide hyphenless alias for usability
   install -d "$pkgdir/usr/bin"
   ln -s /usr/bin/syn-syu "$pkgdir/usr/bin/synsyu"

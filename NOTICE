@@ -1,0 +1,9 @@
+Syn-Syu — Third-Party NOTICE Attributions
+
+As of version 0.1.0 (11th November 2025), this distribution does not include any third-party
+components that provide a NOTICE file requiring pass-through attribution under
+the Apache License, Version 2.0.
+
+If future bundled dependencies include a NOTICE file, their required
+attribution text will be added here unmodified.
+
