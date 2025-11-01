@@ -1,6 +1,6 @@
 # Syn-Syu Overview
 
-Syn-Syu is Synavera's conscious orchestrator for Arch Linux systems. It couples a
+Syn-Syu is Synvera's conscious orchestrator for Arch Linux systems. It couples a
 Rust backend (`synsyu_core`) with a Bash front-end (`syn-syu`) to coordinate
 updates across official repositories and the Arch User Repository.
 
@@ -11,7 +11,7 @@ updates across official repositories and the Arch User Repository.
   JSON manifest at `/tmp/syn-syu_manifest.json` (configurable) describing the
   freshest source for every package.
 - **syn-syu** – Bash CLI that parses the manifest, selects helpers, and executes
-  updates per user intent. Logging follows the Synavera Script Etiquette and is
+  updates per user intent. Logging follows the Synvera Script Etiquette and is
   kept under `~/.local/share/syn-syu/` by default.
 
 ## Manifest Schema

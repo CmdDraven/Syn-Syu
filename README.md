@@ -1,6 +1,6 @@
 # Syn-Syu
 
-Syn-Syu is Synavera's conscious successor to `pacman -Syu`. A Bash orchestrator
+Syn-Syu is Synvera's conscious successor to `pacman -Syu`. A Bash orchestrator
 (`syn-syu`) works together with a Rust backend (`synsyu_core`) to build a
 manifest of safe package upgrades, apply repo and AUR updates selectively, and
 produce detailed logs for review.
@@ -99,7 +99,7 @@ cargo test
 cargo build --release
 ```
 
-Bash code follows the Synavera Script Etiquette guidelines (see `docs/`).
+Bash code follows the Synvera Script Etiquette guidelines (see `docs/`).
 Contributions should include appropriate logging and remain shellchecked where
 possible.
 

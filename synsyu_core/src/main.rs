@@ -1,7 +1,7 @@
 /*============================================================
-  Synavera Project: Syn-Syu
+  Synvera Project: Syn-Syu
   Module: synsyu_core::main
-  Etiquette: Synavera Script Etiquette — Rust Profile v1.1.1
+  Etiquette: Synvera Script Etiquette — Rust Profile v1.1.1
   ------------------------------------------------------------
   Purpose:
     Entry point for Syn-Syu Core. Enumerates installed packages,
@@ -24,7 +24,7 @@
   ------------------------------------------------------------
   SSE Principles Observed:
     - Result-first error handling with deterministic exits
-    - Structured logging following Synavera cadence
+    - Structured logging following Synvera cadence
     - Configurable execution via CLI and config file
 ============================================================*/
 
@@ -59,7 +59,7 @@ use space::{assess_default_paths, ensure_capacity, format_bytes};
 #[command(
     name = "Syn-Syu-Core",
     version,
-    author = "Synavera Systems",
+    author = "Synvera Systems",
     about = "Conscious manifest builder for Syn-Syu"
 )]
 struct Cli {

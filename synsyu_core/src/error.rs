@@ -1,7 +1,7 @@
 /*============================================================
-  Synavera Project: Syn-Syu
+  Synvera Project: Syn-Syu
   Module: synsyu_core::error
-  Etiquette: Synavera Script Etiquette — Rust Profile v1.1.1
+  Etiquette: Synvera Script Etiquette — Rust Profile v1.1.1
   ------------------------------------------------------------
   Purpose:
     Centralise Syn-Syu-Core error types to provide consistent
