@@ -744,7 +744,7 @@ run_flatpak_updates() {
 
   if [ "$DRY_RUN" = "1" ]; then
     local updates
-    updates="$(flatpak remote-ls --updates --columns=application,branch,origin 2>/dev/null || true)"
+    updates="$(flatpak_dry_run_list)"
     if [ -z "$updates" ]; then
       log_info "FLATPAK" "No Flatpak updates available (dry-run)"
     else
@@ -755,11 +755,26 @@ run_flatpak_updates() {
   fi
 
   log_info "FLATPAK" "Applying Flatpak updates"
-  if ! flatpak update -y; then
-    log_error "FLATPAK" "Flatpak update failed"
-    return 1
+  local -a fp_args=(update)
+  # Prefer non-interactive, yes-to-all when available.
+  if flatpak --help 2>/dev/null | grep -q -- "--noninteractive"; then
+    fp_args+=(--noninteractive)
+  fi
+  fp_args+=(--assumeyes)
+  if ! flatpak "${fp_args[@]}"; then
+    # Fallback without noninteractive for older Flatpak versions.
+    if ! flatpak update --assumeyes; then
+      log_error "FLATPAK" "Flatpak update failed"
+      return 1
+    fi
   fi
   return 0
+}
+
+flatpak_dry_run_list() {
+  local updates_output
+  updates_output="$(flatpak remote-ls --updates --columns=application,branch,origin 2>/dev/null || true)"
+  printf '%s' "$updates_output"
 }
 
 #--- run_fwupd_updates
@@ -782,7 +797,11 @@ run_fwupd_updates() {
   fi
 
   log_info "FWUPD" "Applying firmware updates via fwupdmgr"
-  if ! fwupdmgr update -y; then
+  local -a args=(update)
+  if fwupdmgr --help 2>/dev/null | grep -q -- "--assume-yes"; then
+    args+=(--assume-yes)
+  fi
+  if ! fwupdmgr "${args[@]}"; then
     log_error "FWUPD" "Firmware update failed"
     return 1
   fi
