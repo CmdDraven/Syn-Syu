@@ -91,6 +91,14 @@ fi
 # shellcheck source=/dev/null
 . "$LIB_DIR/commands.sh"
 
+REQUIRED_MODULES=("logging.sh" "helpers.sh" "manifest.sh" "common.sh" "config.sh" "cli.sh" "disk.sh" "apps.sh" "commands.sh")
+for _mod in "${REQUIRED_MODULES[@]}"; do
+  if [ ! -f "$LIB_DIR/$_mod" ]; then
+    printf 'Syn-Syu missing module %s in %s. Please reinstall syn-syu to restore required libraries.\n' "$_mod" "$LIB_DIR" >&2
+    exit 121
+  fi
+done
+
 # Prefer env override > PATH discovery > distro path
 readonly SYN_CORE_BIN="${SYN_CORE_BIN:-$(command -v synsyu_core 2>/dev/null || echo /usr/bin/synsyu_core)}"
 readonly DEFAULT_CONFIG_PATH="$HOME/.config/syn-syu/config.toml"
