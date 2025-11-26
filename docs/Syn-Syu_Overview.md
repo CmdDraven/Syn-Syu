@@ -49,6 +49,10 @@ updates across official repositories and the Arch User Repository.
 The Bash orchestrator relies on the `source` and `update_available` fields to
 route packages through `pacman` or the preferred AUR helper.
 
+When Flatpak or firmware updates are requested, the manifest also includes an
+`applications` block capturing the chosen sources (`flatpak` / `fwupd`), whether
+they were enabled during manifest generation, and any discovered updates.
+
 ## CLI Sketch
 
 | Command | Purpose |
@@ -80,7 +84,7 @@ Use `syn-syu --help` for the full flag list.
 - `--batch <N>` – repo package batch size; defaults to `core.batch_size` from
   config or `10`.
 - `--with-flatpak` / `--with-fwupd` – opt into Flatpak and firmware updates
-  during `sync` (also available as standalone commands).
+  during manifest generation and `sync` (also available as standalone commands).
 
 ### Safety & Maintenance Additions
 
@@ -96,7 +100,8 @@ Use `syn-syu --help` for the full flag list.
   logs/console so you can merge configuration changes promptly.
 - **Application updates** – opt into Flatpak and firmware (fwupd) updates via
   config (`[applications]`) or on-demand commands `syn-syu flatpak` /
-  `syn-syu fwupd`, or include them in `sync` with `--with-flatpak`/`--with-fwupd`.
+  `syn-syu fwupd`, or include them in both the manifest and `sync` with
+  `--with-flatpak`/`--with-fwupd`.
 - **Enhanced clean** – `syn-syu clean` now leverages `paccache` to retain the
   most recent `keep_versions` package versions, optionally removes orphaned
   dependencies, and trims stale installer logs.
@@ -146,6 +151,10 @@ check_pacnew = true
 [space]
 min_free_gb = 100
 ```
+
+The `[applications]` section controls the default inclusion of Flatpak and
+firmware updates when building the manifest and during subsequent `sync`
+operations; CLI flags `--with-flatpak` and `--with-fwupd` override the defaults.
 
 The `[space]` section defines `min_free_gb`, a buffer that must remain free on
 disk before updates proceed. The orchestrator also honours `disk_extra_margin_mb`

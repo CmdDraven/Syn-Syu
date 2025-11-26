@@ -25,7 +25,7 @@
 #   aur, repo, inspect, check, clean, log, and help.
 #
 # Revision History:
-#   2025-10-28 COD  Authored Syn-Syu orchestrator (v0.1).
+#   2025-10-28 COD  Authored Syn-Syu orchestrator (v0.11).
 #------------------------------------------------------------
 # SSE Principles Observed:
 #   - set -euo pipefail for predictable exits
@@ -116,6 +116,8 @@ CLEAN_REMOVE_ORPHANS=0
 CLEAN_CHECK_PACNEW=1
 APPLICATIONS_FLATPAK=0
 APPLICATIONS_FWUPD=0
+APPLICATIONS_FLATPAK_CLI=""
+APPLICATIONS_FWUPD_CLI=""
 COMMAND=""
 COMMAND_ARGS=()
 HELPER_PRIORITY=()
@@ -269,18 +271,22 @@ parse_cli() {
         ;;
       --with-flatpak)
         APPLICATIONS_FLATPAK=1
+        APPLICATIONS_FLATPAK_CLI=1
         shift
         ;;
       --no-flatpak)
         APPLICATIONS_FLATPAK=0
+        APPLICATIONS_FLATPAK_CLI=0
         shift
         ;;
       --with-fwupd)
         APPLICATIONS_FWUPD=1
+        APPLICATIONS_FWUPD_CLI=1
         shift
         ;;
       --no-fwupd)
         APPLICATIONS_FWUPD=0
+        APPLICATIONS_FWUPD_CLI=0
         shift
         ;;
       --help|-h)
@@ -496,10 +502,10 @@ PY
       CLEAN_CHECK_PACNEW=0
     fi
 
-    if [ "$apps_flatpak" = "true" ]; then
+    if [ -z "$APPLICATIONS_FLATPAK_CLI" ] && [ "$apps_flatpak" = "true" ]; then
       APPLICATIONS_FLATPAK=1
     fi
-    if [ "$apps_fwupd" = "true" ]; then
+    if [ -z "$APPLICATIONS_FWUPD_CLI" ] && [ "$apps_fwupd" = "true" ]; then
       APPLICATIONS_FWUPD=1
     fi
   fi
@@ -1406,16 +1412,16 @@ Flags:
   --exclude <regex> Exclude packages matching regex (repeatable)
   --min-free-gb <N> Override required free space buffer in gigabytes
   --batch <N>       Batch size for repo installs (default from config or 10)
-  --with-flatpak    Include Flatpak updates during sync
-  --no-flatpak      Skip Flatpak updates (overrides config)
-  --with-fwupd      Include firmware updates during sync
-  --no-fwupd        Skip firmware updates (overrides config)
+  --with-flatpak    Include Flatpak updates in manifest and sync
+  --no-flatpak      Skip Flatpak updates (overrides config/manifest)
+  --with-fwupd      Include firmware updates in manifest and sync
+  --no-fwupd        Skip firmware updates (overrides config/manifest)
 EOF
 }
 
 #--- cmd_version
 cmd_version() {
-  printf 'Syn-Syu orchestrator 0.1\n'
+  printf 'Syn-Syu orchestrator 0.11\n'
 }
 
 #--- handle_exit

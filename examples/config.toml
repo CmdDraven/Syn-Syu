@@ -40,5 +40,6 @@ remove_orphans = false
 check_pacnew = true
 
 [applications]
+# Include application/firmware updates when building manifests and during sync.
 flatpak = false
 fwupd = false

@@ -32,6 +32,7 @@ manifest_require() {
     log_info "MANIFEST" "Rebuilding manifest via synsyu_core"
     manifest_rebuild || return 1
   fi
+  manifest_apply_application_flags
 }
 
 #--- manifest_rebuild
@@ -69,6 +70,202 @@ manifest_rebuild() {
   if ! "$core_bin" "${args[@]}"; then
     log_error "E304" "synsyu_core invocation failed"
     return 1
+  fi
+
+  manifest_update_applications_section
+}
+
+#--- manifest_update_applications_section
+manifest_update_applications_section() {
+  if [ ! -f "$SYN_MANIFEST_PATH" ]; then
+    return 0
+  fi
+
+  local apps_json
+  apps_json="$(manifest_collect_applications_json)" || apps_json=""
+  if [ -z "$apps_json" ]; then
+    log_warn "MANIFEST" "Unable to collect application metadata; manifest unchanged"
+    return 0
+  fi
+
+  local tmp_file
+  tmp_file="$(mktemp "${TMPDIR:-/tmp}/synsyu_apps_XXXXXX")" || return 1
+  if ! jq --argjson apps "$apps_json" '
+    .applications = $apps
+    | .metadata.apps_flatpak = ($apps.flatpak.enabled // false)
+    | .metadata.apps_fwupd = ($apps.fwupd.enabled // false)
+    | .metadata.application_updates = {
+        flatpak: ($apps.flatpak.update_count // 0),
+        fwupd: ($apps.fwupd.update_count // 0)
+      }
+  ' "$SYN_MANIFEST_PATH" >"$tmp_file"; then
+    rm -f "$tmp_file"
+    log_warn "MANIFEST" "Failed to append application data to manifest"
+    return 0
+  fi
+  mv "$tmp_file" "$SYN_MANIFEST_PATH"
+
+  local flatpak_enabled fwupd_enabled flatpak_count fwupd_count
+  flatpak_enabled="$(printf '%s' "$apps_json" | jq -r '.flatpak.enabled // false' 2>/dev/null || echo "false")"
+  fwupd_enabled="$(printf '%s' "$apps_json" | jq -r '.fwupd.enabled // false' 2>/dev/null || echo "false")"
+  flatpak_count="$(printf '%s' "$apps_json" | jq -r '.flatpak.update_count // 0' 2>/dev/null || echo "0")"
+  fwupd_count="$(printf '%s' "$apps_json" | jq -r '.fwupd.update_count // 0' 2>/dev/null || echo "0")"
+  log_info "MANIFEST" "Application intent recorded: flatpak=${flatpak_enabled:-false} (updates ${flatpak_count:-0}), fwupd=${fwupd_enabled:-false} (updates ${fwupd_count:-0})"
+}
+
+#--- manifest_collect_applications_json
+manifest_collect_applications_json() {
+  local flatpak_json fwupd_json
+  flatpak_json="$(manifest_collect_flatpak_updates)" || flatpak_json=""
+  fwupd_json="$(manifest_collect_fwupd_updates)" || fwupd_json=""
+
+  if [ -z "$flatpak_json" ]; then
+    flatpak_json='{"enabled":false,"available":false,"update_count":0,"updates":[]}'
+  fi
+  if [ -z "$fwupd_json" ]; then
+    fwupd_json='{"enabled":false,"available":false,"update_count":0,"updates":[]}'
+  fi
+
+  jq -n --argjson flatpak "$flatpak_json" --argjson fwupd "$fwupd_json" '{flatpak: $flatpak, fwupd: $fwupd}'
+}
+
+#--- manifest_collect_flatpak_updates
+manifest_collect_flatpak_updates() {
+  if [ "${APPLICATIONS_FLATPAK:-0}" != "1" ]; then
+    jq -n '{enabled: false, available: false, update_count: 0, updates: [], note: "flatpak disabled"}'
+    return 0
+  fi
+  if ! command -v flatpak >/dev/null 2>&1; then
+    log_warn "FLATPAK" "Flatpak requested for manifest but binary not present"
+    jq -n '{enabled: true, available: false, update_count: 0, updates: [], note: "flatpak not installed"}'
+    return 0
+  fi
+
+  local output parsed
+  output="$(flatpak remote-ls --updates --columns=application,branch,origin 2>/dev/null || true)"
+  parsed="$(printf '%s\n' "$output" | python3 - <<'PY' 2>/dev/null || true
+import json
+import sys
+
+lines = [ln.strip() for ln in sys.stdin.read().splitlines() if ln.strip()]
+updates = []
+for line in lines:
+    lower = line.lower()
+    if line.startswith("application") and "branch" in lower and "origin" in lower:
+        continue
+    parts = line.split()
+    if len(parts) >= 3:
+        updates.append({"application": parts[0], "branch": parts[1], "origin": parts[2]})
+    else:
+        updates.append({"raw": line})
+
+print(json.dumps({
+    "enabled": True,
+    "available": True,
+    "updates": updates,
+    "update_count": len(updates)
+}))
+PY
+)"
+  if [ -z "$parsed" ]; then
+    parsed='{"enabled": true, "available": true, "updates": [], "update_count": 0}'
+  fi
+  printf '%s' "$parsed"
+}
+
+#--- manifest_collect_fwupd_updates
+manifest_collect_fwupd_updates() {
+  if [ "${APPLICATIONS_FWUPD:-0}" != "1" ]; then
+    jq -n '{enabled: false, available: false, update_count: 0, updates: [], note: "fwupd disabled"}'
+    return 0
+  fi
+  if ! command -v fwupdmgr >/dev/null 2>&1; then
+    log_warn "FWUPD" "Firmware updates requested for manifest but fwupdmgr not present"
+    jq -n '{enabled: true, available: false, update_count: 0, updates: [], note: "fwupdmgr not installed"}'
+    return 0
+  fi
+
+  local parsed json_output
+  json_output="$(fwupdmgr get-updates --json 2>/dev/null || true)"
+  if [ -n "$json_output" ]; then
+    parsed="$(printf '%s' "$json_output" | python3 - <<'PY' 2>/dev/null || true
+import json
+import sys
+
+try:
+    data = json.load(sys.stdin)
+except Exception:
+    sys.exit(1)
+
+devices = data.get("Devices") or data.get("devices") or []
+updates = []
+for dev in devices:
+    name = dev.get("Name") or dev.get("DeviceId") or dev.get("Device") or dev.get("Id") or ""
+    releases = dev.get("Releases") or dev.get("releases") or []
+    for rel in releases:
+        updates.append({
+            "device": name,
+            "version": rel.get("Version") or rel.get("version") or "",
+            "title": rel.get("Title") or rel.get("AppstreamId") or rel.get("Description") or ""
+        })
+
+print(json.dumps({
+    "enabled": True,
+    "available": True,
+    "updates": updates,
+    "update_count": len(updates)
+}))
+PY
+)"
+  fi
+
+  if [ -z "$parsed" ]; then
+    local text_output
+    text_output="$(fwupdmgr get-updates 2>/dev/null || true)"
+    parsed="$(printf '%s\n' "$text_output" | python3 - <<'PY' 2>/dev/null || true
+import json
+import sys
+
+lines = [ln.strip() for ln in sys.stdin.read().splitlines() if ln.strip()]
+print(json.dumps({
+    "enabled": True,
+    "available": True,
+    "updates": [{"raw": ln} for ln in lines],
+    "update_count": len(lines)
+}))
+PY
+)"
+  fi
+
+  if [ -z "$parsed" ]; then
+    parsed='{"enabled": true, "available": true, "updates": [], "update_count": 0}'
+  fi
+  printf '%s' "$parsed"
+}
+
+#--- manifest_apply_application_flags
+manifest_apply_application_flags() {
+  if [ ! -f "$SYN_MANIFEST_PATH" ]; then
+    return 0
+  fi
+
+  local flatpak_enabled fwupd_enabled
+  flatpak_enabled="$(jq -r '.applications.flatpak.enabled // empty' "$SYN_MANIFEST_PATH" 2>/dev/null || true)"
+  fwupd_enabled="$(jq -r '.applications.fwupd.enabled // empty' "$SYN_MANIFEST_PATH" 2>/dev/null || true)"
+
+  if [ -z "$APPLICATIONS_FLATPAK_CLI" ] && [ -n "$flatpak_enabled" ]; then
+    if [ "$flatpak_enabled" = "true" ]; then
+      APPLICATIONS_FLATPAK=1
+    else
+      APPLICATIONS_FLATPAK=0
+    fi
+  fi
+  if [ -z "$APPLICATIONS_FWUPD_CLI" ] && [ -n "$fwupd_enabled" ]; then
+    if [ "$fwupd_enabled" = "true" ]; then
+      APPLICATIONS_FWUPD=1
+    else
+      APPLICATIONS_FWUPD=0
+    fi
   fi
 }
 
@@ -139,14 +336,18 @@ manifest_summary() {
       (.metadata.min_free_bytes // 0),
       (.metadata.required_space_total // 0),
       (.metadata.available_space_bytes // 0),
-      (.metadata.space_checked_path // "")
+      (.metadata.space_checked_path // ""),
+      (.applications.flatpak.enabled // false),
+      (.applications.flatpak.update_count // 0),
+      (.applications.fwupd.enabled // false),
+      (.applications.fwupd.update_count // 0)
     ] | @tsv
   ' "$SYN_MANIFEST_PATH" 2>/dev/null || true)"
   if [ -z "$summary" ]; then
     return 1
   fi
-  local pkgs repo aur updates dl build inst trans buf req avail path
-  IFS=$'\t' read -r pkgs repo aur updates dl build inst trans buf req avail path <<<"$summary"
+  local pkgs repo aur updates dl build inst trans buf req avail path flatpak_enabled flatpak_updates fwupd_enabled fwupd_updates
+  IFS=$'\t' read -r pkgs repo aur updates dl build inst trans buf req avail path flatpak_enabled flatpak_updates fwupd_enabled fwupd_updates <<<"$summary"
   printf 'Packages: %s\n' "$pkgs"
   printf 'Repo candidates: %s\n' "$repo"
   printf 'AUR candidates: %s\n' "$aur"
@@ -159,4 +360,6 @@ manifest_summary() {
   printf 'Required (bytes): %s (~%s GB)\n' "$req" "$(bytes_to_gb_string "$req")"
   printf 'Available (bytes): %s (~%s GB)\n' "$avail" "$(bytes_to_gb_string "$avail")"
   printf 'Checked path: %s\n' "$path"
+  printf 'Flatpak in manifest: %s (updates: %s)\n' "$flatpak_enabled" "$flatpak_updates"
+  printf 'FWUPD in manifest: %s (updates: %s)\n' "$fwupd_enabled" "$fwupd_updates"
 }
