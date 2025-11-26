@@ -183,3 +183,22 @@ log_finalize() {
     sha256sum "$LOG_PATH" >"$hash_path"
   fi
 }
+
+#--- handle_exit
+handle_exit() {
+  local status="${1:-0}"
+  if [ "$status" -ne 0 ]; then
+    log_error "EXIT" "Syn-Syu exiting with status $status"
+  else
+    log_info "EXIT" "Syn-Syu completed successfully"
+  fi
+  log_finalize
+  exit "$status"
+}
+
+#--- handle_interrupt
+handle_interrupt() {
+  log_warn "INT" "Syn-Syu interrupted by user"
+  log_finalize
+  exit 130
+}
