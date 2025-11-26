@@ -1,5 +1,5 @@
 pkgname=syn-syu
-pkgver=0.11
+pkgver=0.12
 pkgrel=1
 pkgdesc="Syn-Syu — Synavera's conscious successor to pacman -Syu"
 arch=('x86_64')
@@ -28,6 +28,12 @@ package() {
   install -Dm644 synsyu/lib/logging.sh  "$pkgdir/usr/lib/syn-syu/logging.sh"
   install -Dm644 synsyu/lib/helpers.sh  "$pkgdir/usr/lib/syn-syu/helpers.sh"
   install -Dm644 synsyu/lib/manifest.sh "$pkgdir/usr/lib/syn-syu/manifest.sh"
+  install -Dm644 synsyu/lib/common.sh   "$pkgdir/usr/lib/syn-syu/common.sh"
+  install -Dm644 synsyu/lib/config.sh   "$pkgdir/usr/lib/syn-syu/config.sh"
+  install -Dm644 synsyu/lib/cli.sh      "$pkgdir/usr/lib/syn-syu/cli.sh"
+  install -Dm644 synsyu/lib/disk.sh     "$pkgdir/usr/lib/syn-syu/disk.sh"
+  install -Dm644 synsyu/lib/apps.sh     "$pkgdir/usr/lib/syn-syu/apps.sh"
+  install -Dm644 synsyu/lib/commands.sh "$pkgdir/usr/lib/syn-syu/commands.sh"
 
   # Docs and examples
   install -Dm644 docs/Syn-Syu_Overview.md "$pkgdir/usr/share/doc/syn-syu/Overview.md"

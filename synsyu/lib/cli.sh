@@ -1,0 +1,154 @@
+#============================================================
+# Synavera Project: Syn-Syu
+# Module: synsyu/lib/cli.sh
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
+#------------------------------------------------------------
+# Purpose:
+#   Parse Syn-Syu command-line arguments into global state.
+#
+# Security / Safety Notes:
+#   Performs argument parsing only; no privileged operations.
+#------------------------------------------------------------
+# SSE Principles Observed:
+#   - Clear flag handling with early validation
+#   - Separation of parsing from execution
+#------------------------------------------------------------
+
+#--- parse_cli
+parse_cli() {
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --config)
+        CONFIG_PATH="$2"
+        shift 2
+        ;;
+      --manifest)
+        SYN_MANIFEST_PATH="$2"
+        shift 2
+        ;;
+      --rebuild)
+        REBUILD_MANIFEST=1
+        shift
+        ;;
+      --dry-run)
+        DRY_RUN=1
+        shift
+        ;;
+      --no-aur)
+        NO_AUR=1
+        shift
+        ;;
+      --no-repo)
+        NO_REPO=1
+        shift
+        ;;
+      --verbose)
+        LOG_VERBOSE=1
+        shift
+        ;;
+      --quiet|-q)
+        QUIET=1
+        shift
+        ;;
+      --json)
+        JSON_OUTPUT=1
+        shift
+        ;;
+      --confirm)
+        NO_CONFIRM=0
+        shift
+        ;;
+      --noconfirm)
+        NO_CONFIRM=1
+        shift
+        ;;
+      --helper)
+        AUR_HELPER="$2"
+        shift 2
+        ;;
+      --include)
+        INCLUDE_PATTERNS+=("$2")
+        shift 2
+        ;;
+      --exclude)
+        EXCLUDE_PATTERNS+=("$2")
+        shift 2
+        ;;
+      --batch)
+        BATCH_SIZE="$2"
+        shift 2
+        ;;
+      --groups)
+        GROUPS_PATH="$2"
+        shift 2
+        ;;
+      --min-free-gb)
+        if [ -z "${2:-}" ]; then
+          printf 'Option --min-free-gb requires a value.\n' >&2
+          exit 101
+        fi
+        local converted
+        converted="$(convert_gb_to_bytes "$2")"
+        if ! [[ "$converted" =~ ^[0-9]+$ ]]; then
+          printf 'Invalid value for --min-free-gb: %s\n' "$2" >&2
+          exit 101
+        fi
+        MIN_FREE_SPACE_BYTES="$converted"
+        MIN_FREE_SPACE_OVERRIDE_BYTES="$converted"
+        shift 2
+        ;;
+      --with-flatpak)
+        APPLICATIONS_FLATPAK=1
+        APPLICATIONS_FLATPAK_CLI=1
+        shift
+        ;;
+      --no-flatpak)
+        APPLICATIONS_FLATPAK=0
+        APPLICATIONS_FLATPAK_CLI=0
+        shift
+        ;;
+      --with-fwupd)
+        APPLICATIONS_FWUPD=1
+        APPLICATIONS_FWUPD_CLI=1
+        shift
+        ;;
+      --no-fwupd)
+        APPLICATIONS_FWUPD=0
+        APPLICATIONS_FWUPD_CLI=0
+        shift
+        ;;
+      --help|-h)
+        COMMAND="help"
+        shift
+        break
+        ;;
+      --version)
+        COMMAND="version"
+        shift
+        break
+        ;;
+      --)
+        shift
+        break
+        ;;
+      -*)
+        printf 'Unknown flag %s\n' "$1" >&2
+        exit 101
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  if [ -z "$COMMAND" ]; then
+    if [ $# -gt 0 ]; then
+      COMMAND="$1"
+      shift
+    else
+      COMMAND="sync"
+    fi
+  fi
+
+  COMMAND_ARGS=("$@")
+}

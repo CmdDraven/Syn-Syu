@@ -52,7 +52,7 @@ impl AurClient {
     pub fn new(config: &AurConfig) -> Result<Self> {
         let client = reqwest::Client::builder()
             .timeout(Duration::from_secs(config.timeout))
-            .user_agent("Syn-Syu-Core/0.11 (linux)")
+            .user_agent("Syn-Syu-Core/0.12 (linux)")
             .build()
             .map_err(|err| SynsyuError::Network(format!("Failed to build HTTP client: {err}")))?;
 

@@ -449,6 +449,12 @@ deploy_libraries() {
   install_with_policy 644 "$PROJECT_ROOT/synsyu/lib/logging.sh" "$LIB_DIR/logging.sh"
   install_with_policy 644 "$PROJECT_ROOT/synsyu/lib/helpers.sh" "$LIB_DIR/helpers.sh"
   install_with_policy 644 "$PROJECT_ROOT/synsyu/lib/manifest.sh" "$LIB_DIR/manifest.sh"
+  install_with_policy 644 "$PROJECT_ROOT/synsyu/lib/common.sh" "$LIB_DIR/common.sh"
+  install_with_policy 644 "$PROJECT_ROOT/synsyu/lib/config.sh" "$LIB_DIR/config.sh"
+  install_with_policy 644 "$PROJECT_ROOT/synsyu/lib/cli.sh" "$LIB_DIR/cli.sh"
+  install_with_policy 644 "$PROJECT_ROOT/synsyu/lib/disk.sh" "$LIB_DIR/disk.sh"
+  install_with_policy 644 "$PROJECT_ROOT/synsyu/lib/apps.sh" "$LIB_DIR/apps.sh"
+  install_with_policy 644 "$PROJECT_ROOT/synsyu/lib/commands.sh" "$LIB_DIR/commands.sh"
 }
 
 #--- detect existing installation
@@ -461,6 +467,12 @@ detect_existing() {
     "$LIB_DIR/logging.sh"
     "$LIB_DIR/helpers.sh"
     "$LIB_DIR/manifest.sh"
+    "$LIB_DIR/common.sh"
+    "$LIB_DIR/config.sh"
+    "$LIB_DIR/cli.sh"
+    "$LIB_DIR/disk.sh"
+    "$LIB_DIR/apps.sh"
+    "$LIB_DIR/commands.sh"
   )
   local p
   for p in "${check[@]}"; do

@@ -1,0 +1,23 @@
+name: Smoke
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install prerequisites
+        run: sudo apt-get update && sudo apt-get install -y jq python3
+
+      - name: Shell syntax check
+        run: bash -n synsyu/syn-syu synsyu/lib/common.sh synsyu/lib/config.sh synsyu/lib/cli.sh synsyu/lib/disk.sh synsyu/lib/apps.sh synsyu/lib/commands.sh synsyu/lib/helpers.sh synsyu/lib/manifest.sh synsyu/lib/logging.sh
+
+      - name: CLI help smoke test
+        run: ./synsyu/syn-syu --help
