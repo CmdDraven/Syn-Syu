@@ -119,16 +119,17 @@ parse_cli() {
         ;;
       --help|-h)
         COMMAND="help"
+        COMMAND_ARGS=()
         shift
-        break
         ;;
       --version)
         COMMAND="version"
+        COMMAND_ARGS=()
         shift
-        break
         ;;
       --)
         shift
+        COMMAND_ARGS+=("$@")
         break
         ;;
       -*)
@@ -136,19 +137,17 @@ parse_cli() {
         exit 101
         ;;
       *)
-        break
+        if [ -z "$COMMAND" ]; then
+          COMMAND="$1"
+        else
+          COMMAND_ARGS+=("$1")
+        fi
+        shift
         ;;
     esac
   done
 
   if [ -z "$COMMAND" ]; then
-    if [ $# -gt 0 ]; then
-      COMMAND="$1"
-      shift
-    else
-      COMMAND="sync"
-    fi
+    COMMAND="sync"
   fi
-
-  COMMAND_ARGS=("$@")
 }
