@@ -1,5 +1,5 @@
 pkgname=syn-syu
-pkgver=0.12
+pkgver=0.13
 pkgrel=1
 pkgdesc="Syn-Syu — Synavera's conscious successor to pacman -Syu"
 arch=('x86_64')

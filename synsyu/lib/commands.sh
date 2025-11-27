@@ -708,5 +708,5 @@ EOF
 
 #--- cmd_version
 cmd_version() {
-  printf 'Syn-Syu orchestrator 0.12\n'
+  printf 'Syn-Syu orchestrator 0.13\n'
 }

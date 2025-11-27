@@ -25,7 +25,7 @@
 #   aur, repo, inspect, check, clean, log, and help.
 #
 # Revision History:
-#   2025-10-28 COD  Authored Syn-Syu orchestrator (v0.12).
+#   2025-10-28 COD  Authored Syn-Syu orchestrator (v0.13).
 #   2025-11-11 COD  Refactored into modular structure (hybrid).
 #------------------------------------------------------------
 # SSE Principles Observed:
