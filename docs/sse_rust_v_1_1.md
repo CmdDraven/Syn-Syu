@@ -1,11 +1,11 @@
 <!--
-Synavera Script Etiquette — Rust Profile v1.1.1
+Synavera Script Etiquette — Rust Profile v1.1
 Derived from SSE v1.1
 Author: CMD Draven
 Scope: Systems and application development in Rust under Synavera standards.
 -->
 
-# Synavera Script Etiquette — Rust Profile v1.1.1
+# Synavera Script Etiquette — Rust Profile v1.1
 
 ## 1. Verbosity vs Brevity
 **Chosen Approach:** Explicit + Intent‑Driven
@@ -105,7 +105,7 @@ Builds are reproducible on stable toolchains and documented. Release artifacts i
 /*============================================================
   Synavera Project: [PROJECT / CRATE NAME]
   Module: [crate::path::to::module]
-  Etiquette: Synavera Script Etiquette — Rust Profile v1.1.1
+  Etiquette: Synavera Script Etiquette — Rust Profile v1.1
   ------------------------------------------------------------
   Purpose:
     [Describe the module’s mission succinctly.]

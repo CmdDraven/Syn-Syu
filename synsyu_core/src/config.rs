@@ -1,7 +1,7 @@
 /*============================================================
   Synavera Project: Syn-Syu
   Module: synsyu_core::config
-  Etiquette: Synavera Script Etiquette — Rust Profile v1.1.1
+  Etiquette: Synavera Script Etiquette — Rust Profile v1.1
   ------------------------------------------------------------
   Purpose:
     Load Syn-Syu configuration from operator-defined sources,
@@ -150,6 +150,10 @@ pub struct AurConfig {
     pub max_retries: usize,
     #[serde(default = "AurConfig::default_timeout_seconds")]
     pub timeout: u64,
+    #[serde(default = "AurConfig::default_max_parallel_requests")]
+    pub max_parallel_requests: usize,
+    #[serde(default = "AurConfig::default_max_kib_per_sec")]
+    pub max_kib_per_sec: u64,
 }
 
 impl AurConfig {
@@ -165,6 +169,12 @@ impl AurConfig {
     fn default_timeout_seconds() -> u64 {
         10
     }
+    fn default_max_parallel_requests() -> usize {
+        4
+    }
+    fn default_max_kib_per_sec() -> u64 {
+        0
+    }
 }
 
 impl Default for AurConfig {
@@ -174,6 +184,8 @@ impl Default for AurConfig {
             max_args: Self::default_max_args(),
             max_retries: Self::default_max_retries(),
             timeout: Self::default_timeout_seconds(),
+            max_parallel_requests: Self::default_max_parallel_requests(),
+            max_kib_per_sec: Self::default_max_kib_per_sec(),
         }
     }
 }

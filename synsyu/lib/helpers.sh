@@ -1,7 +1,7 @@
 #============================================================
 # Synavera Project: Syn-Syu
 # Module: synsyu/lib/helpers.sh
-# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1
 #------------------------------------------------------------
 # Purpose:
 #   Detect and rank available Arch User Repository helpers.

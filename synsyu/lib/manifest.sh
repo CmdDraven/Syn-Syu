@@ -1,7 +1,7 @@
 #============================================================
 # Synavera Project: Syn-Syu
 # Module: synsyu/lib/manifest.sh
-# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1
 #------------------------------------------------------------
 # Purpose:
 #   Manage Syn-Syu manifest lifecycle and provide JSON parsing
@@ -67,7 +67,7 @@ manifest_rebuild() {
     args+=("--min-free-gb" "$(bytes_to_gb_string "$MIN_FREE_SPACE_BYTES")")
   fi
 
-  if ! "$core_bin" "${args[@]}"; then
+  if ! "$core_bin" --internal-manifest-build core "${args[@]}"; then
     log_error "E304" "synsyu_core invocation failed"
     return 1
   fi

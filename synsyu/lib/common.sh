@@ -1,7 +1,7 @@
 #============================================================
 # Synavera Project: Syn-Syu
 # Module: synsyu/lib/common.sh
-# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1
 #------------------------------------------------------------
 # Purpose:
 #   Shared utility functions for conversions and failure

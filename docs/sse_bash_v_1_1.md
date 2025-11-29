@@ -1,11 +1,11 @@
 <!--
-Synavera Script Etiquette — Bash Profile v1.1.1
+Synavera Script Etiquette — Bash Profile v1.1
 Derived from SSE v1.1
 Author: CMD Draven
 Scope: Shell / POSIX-compliant Bash scripting under Synavera standards.
 -->
 
-# Synavera Script Etiquette — Bash Profile v1.1.1
+# Synavera Script Etiquette — Bash Profile v1.1
 
 ## 1. Verbosity vs Brevity  
 **Chosen Approach:** Verbose + Defensive  
@@ -105,7 +105,7 @@ No deletion or truncation of logs is permitted; rotate only by archiving.
 #============================================================
 # Synavera Project: [PROJECT / MODULE NAME]
 # Module: [relative/path/to/script.sh]
-# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1
 #------------------------------------------------------------
 # Purpose:
 #   [Briefly describe what this script does.]

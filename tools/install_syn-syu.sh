@@ -2,7 +2,7 @@
 #============================================================
 # Synavera Project: Syn-Syu
 # Module: tools/install_syn-syu.sh
-# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1
 #------------------------------------------------------------
 # Purpose:
 #   Interactive installer wizard that builds and deploys

@@ -95,6 +95,9 @@ synsyu fwupd      # Apply firmware updates via fwupdmgr
 synsyu sync --with-flatpak --with-fwupd  # include app/firmware updates in one sweep
 ```
 
+CLI parsing now lives entirely in the Rust binary (`synsyu_core`); the `syn-syu`
+shell entry point simply forwards arguments to it for a single source of truth.
+
 Use `syn-syu --help` for the full command set, including manifest inspection,
 logging, and AUR-only or repo-only operations.
 

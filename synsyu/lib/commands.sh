@@ -1,7 +1,7 @@
 #============================================================
 # Synavera Project: Syn-Syu
 # Module: synsyu/lib/commands.sh
-# Etiquette: Synavera Script Etiquette — Bash Profile v1.1.1
+# Etiquette: Synavera Script Etiquette — Bash Profile v1.1
 #------------------------------------------------------------
 # Purpose:
 #   Command dispatchers and orchestration flows for Syn-Syu.
@@ -165,7 +165,7 @@ cmd_core() {
     if [ "${MIN_FREE_SPACE_BYTES:-0}" -gt 0 ]; then
       args+=("--min-free-gb" "$(bytes_to_gb_string "$MIN_FREE_SPACE_BYTES")")
     fi
-    "$core_bin" "${args[@]}" || exit $?
+    "$core_bin" --internal-manifest-build core "${args[@]}" || exit $?
   else
     manifest_rebuild
   fi
