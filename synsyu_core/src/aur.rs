@@ -30,6 +30,7 @@
 use std::collections::HashMap;
 use std::time::Duration;
 
+use reqwest::header::CONTENT_LENGTH;
 use reqwest::StatusCode;
 use serde::Deserialize;
 use tokio::time::sleep;
@@ -91,7 +92,12 @@ impl AurClient {
                     }
 
                     for entry in payload.results.into_iter() {
-                        let download_size = entry.compressed_size;
+                        let download_size = match (entry.compressed_size, entry.url_path.as_deref())
+                        {
+                            (Some(size), _) => Some(size),
+                            (None, Some(path)) => self.fetch_tarball_size(path).await,
+                            (None, None) => None,
+                        };
                         let installed_size = entry.installed_size;
                         versions.insert(
                             entry.name,
@@ -125,6 +131,32 @@ impl AurClient {
         }
         url
     }
+
+    fn aur_base_url(&self) -> String {
+        // Trim trailing /rpc to derive the host root for tarball fetches.
+        let mut base = self.base_url.trim_end_matches('/').to_string();
+        if let Some(idx) = base.rfind("/rpc") {
+            base.truncate(idx);
+        }
+        base
+    }
+
+    async fn fetch_tarball_size(&self, path: &str) -> Option<u64> {
+        let url = if path.starts_with("http://") || path.starts_with("https://") {
+            path.to_string()
+        } else {
+            format!("{}{}", self.aur_base_url(), path)
+        };
+        let response = self.client.head(url).send().await.ok()?;
+        if !response.status().is_success() {
+            return None;
+        }
+        response
+            .headers()
+            .get(CONTENT_LENGTH)
+            .and_then(|value| value.to_str().ok())
+            .and_then(|value| value.parse::<u64>().ok())
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -144,6 +176,8 @@ struct AurEntry {
     pub name: String,
     #[serde(rename = "Version")]
     pub version: String,
+    #[serde(rename = "URLPath")]
+    pub url_path: Option<String>,
     #[serde(rename = "CompressedSize")]
     pub compressed_size: Option<u64>,
     #[serde(rename = "InstalledSize")]

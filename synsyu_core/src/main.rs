@@ -193,9 +193,14 @@ async fn run() -> Result<ExitCode> {
         ),
     );
 
-    let mut document =
-        build_manifest(&selected, &repo_versions, &aur_versions, min_free_bytes, &logger)
-            .await?;
+    let mut document = build_manifest(
+        &selected,
+        &repo_versions,
+        &aur_versions,
+        min_free_bytes,
+        &logger,
+    )
+    .await?;
 
     let required_total = document.metadata.required_space_total;
     let download_total = document.metadata.download_size_total;

@@ -246,7 +246,8 @@ async fn resolve_package(
     let installed_repo = repo_info.and_then(|info| info.installed_size);
     let download_aur = aur_info.and_then(|info| info.download_size);
     let installed_aur = aur_info.and_then(|info| info.installed_size);
-    let (download_selected, installed_selected) = match source {
+    let local_installed = package.installed_size;
+    let (download_selected, mut installed_selected) = match source {
         PackageSource::Pacman => (download_repo, installed_repo),
         PackageSource::Aur => (download_aur, installed_aur),
         PackageSource::Local => (None, None),
@@ -255,6 +256,10 @@ async fn resolve_package(
             installed_repo.or(installed_aur),
         ),
     };
+
+    if installed_selected.is_none() {
+        installed_selected = local_installed;
+    }
 
     let install_estimate = match (installed_selected, download_selected, source) {
         (Some(value), _, _) => Some(value),
@@ -269,6 +274,7 @@ async fn resolve_package(
             Some(triple / 2 + triple % 2)
         }
         (PackageSource::Aur, _, Some(download)) => Some(download.saturating_mul(8)),
+        (PackageSource::Aur, Some(install), None) => Some(install.saturating_mul(3)),
         _ => None,
     };
 

@@ -43,6 +43,7 @@ pub struct InstalledPackage {
     pub name: String,
     pub version: String,
     pub repository: Option<String>,
+    pub installed_size: Option<u64>,
 }
 
 /// Enumerate all installed packages via `pacman -Qi`.
@@ -72,6 +73,7 @@ pub async fn enumerate_installed_packages() -> Result<Vec<InstalledPackage>> {
         let mut name: Option<String> = None;
         let mut version: Option<String> = None;
         let mut repository: Option<String> = None;
+        let mut installed_size: Option<u64> = None;
 
         for line in block.lines() {
             if let Some((raw_key, raw_value)) = line.split_once(':') {
@@ -81,6 +83,7 @@ pub async fn enumerate_installed_packages() -> Result<Vec<InstalledPackage>> {
                     "Name" => name = Some(value.to_string()),
                     "Version" => version = Some(value.to_string()),
                     "Repository" => repository = Some(value.to_string()),
+                    "Installed Size" => installed_size = parse_pacman_size(value),
                     _ => {}
                 }
             }
@@ -91,6 +94,7 @@ pub async fn enumerate_installed_packages() -> Result<Vec<InstalledPackage>> {
                 name,
                 version,
                 repository,
+                installed_size,
             });
         }
     }
