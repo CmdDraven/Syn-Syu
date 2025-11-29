@@ -2,9 +2,52 @@
 # Minimal wrapper: delegate to synsyu_core for all CLI handling.
 set -euo pipefail
 
-TARGET="${SYN_CORE_BIN:-$(command -v synsyu_core 2>/dev/null || true)}"
-if [ -z "$TARGET" ]; then
-  TARGET="/usr/bin/synsyu_core"
+SCRIPT_PATH="$(realpath "$0")"
+SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+
+discover_core() {
+  local candidate
+  # 1) Explicit override
+  if [ -n "${SYN_CORE_BIN:-}" ] && [ -x "$SYN_CORE_BIN" ]; then
+    printf '%s' "$SYN_CORE_BIN"
+    return 0
+  fi
+  # 2) PATH resolution
+  candidate="$(command -v synsyu_core 2>/dev/null || true)"
+  if [ -n "$candidate" ]; then
+    printf '%s' "$candidate"
+    return 0
+  fi
+  # 3) Relative build outputs (repo/local use)
+  for rel in \
+    "../synsyu_core/target/release/synsyu_core" \
+    "../synsyu_core/target/debug/synsyu_core" \
+    "../target/release/synsyu_core" \
+    "../target/debug/synsyu_core"
+  do
+    candidate="$(realpath -m "$SCRIPT_DIR/$rel")"
+    if [ -x "$candidate" ]; then
+      printf '%s' "$candidate"
+      return 0
+    fi
+  done
+  # 4) Fallback to standard install path (may fail, but keeps legacy expectation)
+  if [ -x /usr/bin/synsyu_core ]; then
+    printf '/usr/bin/synsyu_core'
+    return 0
+  fi
+  return 1
+}
+
+CORE_BIN="$(discover_core || true)"
+if [ -z "$CORE_BIN" ]; then
+  MANIFEST_PATH="$(realpath -m "$SCRIPT_DIR/../synsyu_core/Cargo.toml")"
+  if command -v cargo >/dev/null 2>&1 && [ -f "$MANIFEST_PATH" ]; then
+    # Fallback: build and run directly via cargo if no binary is present.
+    exec cargo run --manifest-path "$MANIFEST_PATH" -- "$@"
+  fi
+  printf 'syn-syu: unable to locate synsyu_core. Build it (cargo build) or set SYN_CORE_BIN.\n' >&2
+  exit 127
 fi
 
-exec "$TARGET" "$@"
+exec "$CORE_BIN" "$@"
